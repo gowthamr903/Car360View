@@ -1,1 +1,375 @@
-"use strict";!function(){var e=window.Marzipano,t=window.bowser,o=window.screenfull,n=window.APP_DATA,i=document.querySelector("#pano"),r=(document.querySelector("#titleBar .sceneName"),document.querySelectorAll("#sceneList .scene")),s=document.querySelector(".interiorrbtn"),a=document.querySelector(".exteriorbtn"),d=document.querySelector("#fullscreenToggle");if(s.addEventListener("click",function(){y(M("12-front_interior"))}),a.addEventListener("click",function(){y(M("0-front"))}),window.matchMedia){var c=function(){l.matches?(document.body.classList.remove("desktop"),document.body.classList.add("mobile")):(document.body.classList.remove("mobile"),document.body.classList.add("desktop"))},l=matchMedia("(max-width: 500px), (max-height: 500px)");c(),l.addListener(c)}else document.body.classList.add("desktop");document.body.classList.add("no-touch"),window.addEventListener("touchstart",function(){document.body.classList.remove("no-touch"),document.body.classList.add("touch")}),t.msie&&parseFloat(t.version)<11&&document.body.classList.add("tooltip-fallback");var m={controls:{mouseViewMode:n.settings.mouseViewMode}},u=new e.Viewer(i,m),p=n.scenes.map(function(t){var o=e.ImageUrlSource.fromString("https://gowthamr903.github.io/Car360View/images/"+t.id+"/preview.JPG"),n=new e.EquirectGeometry(t.levels),i=e.RectilinearView.limit.traditional(t.faceSize,100*Math.PI/180,120*Math.PI/180),r=new e.RectilinearView(t.initialViewParameters,i),s=u.createScene({source:o,geometry:n,view:r,pinFirstLevel:!0});return t.linkHotspots.forEach(function(e){var t=function(e){var t=document.createElement("div");t.classList.add("hotspot"),t.classList.add("link-hotspot");var o=document.createElement("img");"8-front_open"==e.target||"9-left_side_open"==e.target||"10-back_open"==e.target||"11-right_side_open"==e.target||"1-front"==e.target?(o.src="img/down-arrow.png",o.classList.add("link-hotspot-icon-arrow")):"14-side_interior"==e.target||"12-front_interior"==e.target||"13-back_interior"==e.target?(o.src="img/down.png",o.classList.add("link-hotspot-icon-seat")):(o.src="img/marker.webp",o.classList.add("link-hotspot-icon"));for(var n=["-ms-transform","-webkit-transform","transform"],i=0;i<n.length;i++){var r=n[i];o.style[r]="rotate("+e.rotation+"rad)"}t.addEventListener("click",function(){y(M(e.target))}),b(t);var s=document.createElement("div");return s.classList.add("hotspot-tooltip"),t.appendChild(o),t.appendChild(s),t}(e);s.hotspotContainer().createHotspot(t,{yaw:e.yaw,pitch:e.pitch})}),t.infoHotspots.forEach(function(e){var t=function(e){var t=document.createElement("div");t.classList.add("hotspot"),t.classList.add("info-hotspot");var o=document.createElement("div");o.classList.add("info-hotspot-header");var n=document.createElement("div");n.classList.add("info-hotspot-icon-wrapper");var i=document.createElement("img");i.src="img/info.png",i.classList.add("info-hotspot-icon"),n.appendChild(i);var r=document.createElement("div");r.classList.add("info-hotspot-title-wrapper");var s=document.createElement("div");s.classList.add("info-hotspot-title"),s.innerHTML=e.title,r.appendChild(s);var a=document.createElement("div");a.classList.add("info-hotspot-close-wrapper");var d=document.createElement("img");d.src="img/close.png",d.classList.add("info-hotspot-close-icon"),a.appendChild(d),o.appendChild(n),o.appendChild(r),o.appendChild(a);var c=document.createElement("div");c.classList.add("info-hotspot-text"),c.innerHTML=e.text,t.appendChild(o),t.appendChild(c);var l=document.createElement("div");l.innerHTML=t.innerHTML,l.classList.add("info-hotspot-modal"),document.body.appendChild(l);var m=function(){t.classList.toggle("visible"),l.classList.toggle("visible")};return t.querySelector(".info-hotspot-header").addEventListener("click",m),l.querySelector(".info-hotspot-close-wrapper").addEventListener("click",m),b(t),t}(e);s.hotspotContainer().createHotspot(t,{yaw:e.yaw,pitch:e.pitch})}),{data:t,scene:s,view:r}});o.enabled&&n.settings.fullscreenButton?(document.body.classList.add("fullscreen-enabled"),d.addEventListener("click",function(){o.toggle()}),o.on("change",function(){o.isFullscreen?d.classList.add("enabled"):d.classList.remove("enabled")})):document.body.classList.add("fullscreen-disabled");var h=document.querySelector("#viewUp"),v=document.querySelector("#viewDown"),f=document.querySelector("#viewLeft"),w=document.querySelector("#viewRight"),g=document.querySelector("#viewIn"),L=document.querySelector("#viewOut"),E=u.controls();function y(e){e.view.setParameters(e.data.initialViewParameters),e.scene.switchTo(),function(e){for(var t=0;t<r.length;t++){var o=r[t];o.getAttribute("data-id")===e.data.id?o.classList.add("current"):o.classList.remove("current")}}(e)}function b(e,t){t=["touchstart","touchmove","touchend","touchcancel","wheel","mousewheel"];for(var o=0;o<t.length;o++)e.addEventListener(t[o],function(e){e.stopPropagation()})}function M(e){for(var t=0;t<p.length;t++)if(p[t].data.id===e)return p[t];return null}E.registerMethod("upElement",new e.ElementPressControlMethod(h,"y",-.7,3),!0),E.registerMethod("downElement",new e.ElementPressControlMethod(v,"y",.7,3),!0),E.registerMethod("leftElement",new e.ElementPressControlMethod(f,"x",-.7,3),!0),E.registerMethod("rightElement",new e.ElementPressControlMethod(w,"x",.7,3),!0),E.registerMethod("inElement",new e.ElementPressControlMethod(g,"zoom",-.7,3),!0),E.registerMethod("outElement",new e.ElementPressControlMethod(L,"zoom",.7,3),!0),y(p[0])}();
+/*
+ * Copyright 2016 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+'use strict';
+
+(function() {
+  var Marzipano = window.Marzipano;
+  var bowser = window.bowser;
+  var screenfull = window.screenfull;
+  var data = window.APP_DATA;
+
+  // Grab elements from DOM.
+  var panoElement = document.querySelector('#pano');
+  var sceneNameElement = document.querySelector('#titleBar .sceneName');
+  var sceneElements = document.querySelectorAll('#sceneList .scene');
+
+  var interiorBtn = document.querySelector('.interiorrbtn');
+  var exteriorBtn = document.querySelector('.exteriorbtn');
+
+  var fullscreenToggleElement = document.querySelector('#fullscreenToggle');
+
+  interiorBtn.addEventListener('click', function() {
+    switchScene(findSceneById("12-front_interior"));
+  });
+
+  exteriorBtn.addEventListener('click', function() {
+    switchScene(findSceneById("0-front"));
+  });
+
+
+  // Detect desktop or mobile mode.
+  if (window.matchMedia) {
+    var setMode = function() {
+      if (mql.matches) {
+        document.body.classList.remove('desktop');
+        document.body.classList.add('mobile');
+      } else {
+        document.body.classList.remove('mobile');
+        document.body.classList.add('desktop');
+      }
+    };
+    var mql = matchMedia("(max-width: 500px), (max-height: 500px)");
+    setMode();
+    mql.addListener(setMode);
+  } else {
+    document.body.classList.add('desktop');
+  }
+
+  // Detect whether we are on a touch device.
+  document.body.classList.add('no-touch');
+  window.addEventListener('touchstart', function() {
+    document.body.classList.remove('no-touch');
+    document.body.classList.add('touch');
+  });
+
+  // Use tooltip fallback mode on IE < 11.
+  if (bowser.msie && parseFloat(bowser.version) < 11) {
+    document.body.classList.add('tooltip-fallback');
+  }
+
+  // Viewer options.
+  var viewerOpts = {
+    controls: {
+      mouseViewMode: data.settings.mouseViewMode
+    }
+  };
+
+  // Initialize viewer.
+  var viewer = new Marzipano.Viewer(panoElement, viewerOpts);
+
+  // Create scenes.
+  var scenes = data.scenes.map(function(data) {
+    var urlPrefix = "https://gowthamr903.github.io/Car360View/images";
+    // var source = Marzipano.ImageUrlSource.fromString(
+    //   urlPrefix + "/" + data.id + "/{z}/{f}/{y}/{x}.jpg",
+    //   { cubeMapPreviewUrl: urlPrefix + "/" + data.id + "/preview.jpg" });
+    var source = Marzipano.ImageUrlSource.fromString(
+      urlPrefix + "/" + data.id + "/preview.JPG" );
+    var geometry = new Marzipano.EquirectGeometry(data.levels);
+
+    var limiter = Marzipano.RectilinearView.limit.traditional(data.faceSize, 100*Math.PI/180, 120*Math.PI/180);
+    var view = new Marzipano.RectilinearView(data.initialViewParameters, limiter);
+
+    var scene = viewer.createScene({
+      source: source,
+      geometry: geometry,
+      view: view,
+      pinFirstLevel: true
+    });
+
+    // Create link hotspots.
+    data.linkHotspots.forEach(function(hotspot) {
+      var element = createLinkHotspotElement(hotspot);
+      scene.hotspotContainer().createHotspot(element, { yaw: hotspot.yaw, pitch: hotspot.pitch });
+    });
+
+    // Create info hotspots.
+    data.infoHotspots.forEach(function(hotspot) {
+      var element = createInfoHotspotElement(hotspot);
+      scene.hotspotContainer().createHotspot(element, { yaw: hotspot.yaw, pitch: hotspot.pitch });
+    });
+
+    return {
+      data: data,
+      scene: scene,
+      view: view
+    };
+  });
+
+
+  // Set up fullscreen mode, if supported.
+  if (screenfull.enabled && data.settings.fullscreenButton) {
+    document.body.classList.add('fullscreen-enabled');
+    fullscreenToggleElement.addEventListener('click', function() {
+      screenfull.toggle();
+    });
+    screenfull.on('change', function() {
+      if (screenfull.isFullscreen) {
+        fullscreenToggleElement.classList.add('enabled');
+      } else {
+        fullscreenToggleElement.classList.remove('enabled');
+      }
+    });
+  } else {
+    document.body.classList.add('fullscreen-disabled');
+  }
+
+
+
+
+  // Set handler for scene switch.
+  // scenes.forEach(function(scene) {
+  //   var el = document.querySelector('#sceneList .scene[data-id="' + scene.data.id + '"]');
+  //   el.addEventListener('click', function() {
+  //     switchScene(scene);
+  //     // On mobile, hide scene list after selecting a scene.
+  //     if (document.body.classList.contains('mobile')) {
+  //       hideSceneList();
+  //     }
+  //   });
+  // });
+
+  // DOM elements for view controls.
+  var viewUpElement = document.querySelector('#viewUp');
+  var viewDownElement = document.querySelector('#viewDown');
+  var viewLeftElement = document.querySelector('#viewLeft');
+  var viewRightElement = document.querySelector('#viewRight');
+  var viewInElement = document.querySelector('#viewIn');
+  var viewOutElement = document.querySelector('#viewOut');
+
+  // Dynamic parameters for controls.
+  var velocity = 0.7;
+  var friction = 3;
+
+  // Associate view controls with elements.
+  var controls = viewer.controls();
+  controls.registerMethod('upElement',    new Marzipano.ElementPressControlMethod(viewUpElement,     'y', -velocity, friction), true);
+  controls.registerMethod('downElement',  new Marzipano.ElementPressControlMethod(viewDownElement,   'y',  velocity, friction), true);
+  controls.registerMethod('leftElement',  new Marzipano.ElementPressControlMethod(viewLeftElement,   'x', -velocity, friction), true);
+  controls.registerMethod('rightElement', new Marzipano.ElementPressControlMethod(viewRightElement,  'x',  velocity, friction), true);
+  controls.registerMethod('inElement',    new Marzipano.ElementPressControlMethod(viewInElement,  'zoom', -velocity, friction), true);
+  controls.registerMethod('outElement',   new Marzipano.ElementPressControlMethod(viewOutElement, 'zoom',  velocity, friction), true);
+
+  function sanitize(s) {
+    return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
+  }
+
+  function switchScene(scene) {
+  
+    scene.view.setParameters(scene.data.initialViewParameters);
+    scene.scene.switchTo();
+    
+   // updateSceneName(scene);
+    updateSceneList(scene);
+  }
+
+  function updateSceneName(scene) {
+    sceneNameElement.innerHTML = sanitize(scene.data.name);
+  }
+
+  function updateSceneList(scene) {
+    for (var i = 0; i < sceneElements.length; i++) {
+      var el = sceneElements[i];
+      if (el.getAttribute('data-id') === scene.data.id) {
+        el.classList.add('current');
+      } else {
+        el.classList.remove('current');
+      }
+    }
+  }
+
+
+
+
+
+
+
+  function createLinkHotspotElement(hotspot) {
+
+    // Create wrapper element to hold icon and tooltip.
+    var wrapper = document.createElement('div');
+    wrapper.classList.add('hotspot');
+    wrapper.classList.add('link-hotspot');
+
+    // Create image element.
+    var icon = document.createElement('img');
+    // icon.src = 'img/link.png';
+    // icon.classList.add('link-hotspot-icon');
+
+    if(hotspot.target =='8-front_open' || hotspot.target == "9-left_side_open" ||  hotspot.target == "10-back_open" ||  hotspot.target ==  "11-right_side_open" ||  hotspot.target ==  "1-front" ){
+      icon.src = 'img/down-arrow.png';
+      icon.classList.add('link-hotspot-icon-arrow');
+    }
+
+    else if(hotspot.target =="14-side_interior" || hotspot.target =="12-front_interior" ||  hotspot.target =="13-back_interior"){
+      icon.src = 'img/down.png';
+      icon.classList.add('link-hotspot-icon-seat');
+
+    }
+    else
+    {
+      icon.src = 'img/marker.webp';
+      icon.classList.add('link-hotspot-icon');
+    }
+    
+  
+
+    // Set rotation transform.
+    var transformProperties = [ '-ms-transform', '-webkit-transform', 'transform' ];
+    for (var i = 0; i < transformProperties.length; i++) {
+      var property = transformProperties[i];
+      icon.style[property] = 'rotate(' + hotspot.rotation + 'rad)';
+    }
+
+    // Add click event handler.
+    wrapper.addEventListener('click', function() {
+      switchScene(findSceneById(hotspot.target));
+    });
+
+    // Prevent touch and scroll events from reaching the parent element.
+    // This prevents the view control logic from interfering with the hotspot.
+    stopTouchAndScrollEventPropagation(wrapper);
+
+    // Create tooltip element.
+    var tooltip = document.createElement('div');
+    tooltip.classList.add('hotspot-tooltip');
+    // tooltip.classList.add('link-hotspot-tooltip');
+    // tooltip.innerHTML = findSceneDataById(hotspot.target).name;
+
+    wrapper.appendChild(icon);
+    wrapper.appendChild(tooltip);
+
+    return wrapper;
+  }
+
+  function createInfoHotspotElement(hotspot) {
+
+    // Create wrapper element to hold icon and tooltip.
+    var wrapper = document.createElement('div');
+    wrapper.classList.add('hotspot');
+    wrapper.classList.add('info-hotspot');
+
+    // Create hotspot/tooltip header.
+    var header = document.createElement('div');
+    header.classList.add('info-hotspot-header');
+
+    // Create image element.
+    var iconWrapper = document.createElement('div');
+    iconWrapper.classList.add('info-hotspot-icon-wrapper');
+    var icon = document.createElement('img');
+    icon.src = 'img/info.png';
+    icon.classList.add('info-hotspot-icon');
+    iconWrapper.appendChild(icon);
+
+    // Create title element.
+    var titleWrapper = document.createElement('div');
+    titleWrapper.classList.add('info-hotspot-title-wrapper');
+    var title = document.createElement('div');
+    title.classList.add('info-hotspot-title');
+    title.innerHTML = hotspot.title;
+    titleWrapper.appendChild(title);
+
+    // Create close element.
+    var closeWrapper = document.createElement('div');
+    closeWrapper.classList.add('info-hotspot-close-wrapper');
+    var closeIcon = document.createElement('img');
+    closeIcon.src = 'img/close.png';
+    closeIcon.classList.add('info-hotspot-close-icon');
+    closeWrapper.appendChild(closeIcon);
+
+    // Construct header element.
+    header.appendChild(iconWrapper);
+    header.appendChild(titleWrapper);
+    header.appendChild(closeWrapper);
+
+    // Create text element.
+    var text = document.createElement('div');
+    text.classList.add('info-hotspot-text');
+    text.innerHTML = hotspot.text;
+
+    // Place header and text into wrapper element.
+    wrapper.appendChild(header);
+    wrapper.appendChild(text);
+
+    // Create a modal for the hotspot content to appear on mobile mode.
+    var modal = document.createElement('div');
+    modal.innerHTML = wrapper.innerHTML;
+    modal.classList.add('info-hotspot-modal');
+    document.body.appendChild(modal);
+
+    var toggle = function() {
+      wrapper.classList.toggle('visible');
+      modal.classList.toggle('visible');
+    };
+
+    // Show content when hotspot is clicked.
+    wrapper.querySelector('.info-hotspot-header').addEventListener('click', toggle);
+
+    // Hide content when close icon is clicked.
+    modal.querySelector('.info-hotspot-close-wrapper').addEventListener('click', toggle);
+
+    // Prevent touch and scroll events from reaching the parent element.
+    // This prevents the view control logic from interfering with the hotspot.
+    stopTouchAndScrollEventPropagation(wrapper);
+
+    return wrapper;
+  }
+
+  // Prevent touch and scroll events from reaching the parent element.
+  function stopTouchAndScrollEventPropagation(element, eventList) {
+    var eventList = [ 'touchstart', 'touchmove', 'touchend', 'touchcancel',
+                      'wheel', 'mousewheel' ];
+    for (var i = 0; i < eventList.length; i++) {
+      element.addEventListener(eventList[i], function(event) {
+        event.stopPropagation();
+      });
+    }
+  }
+
+  function findSceneById(id) {
+    for (var i = 0; i < scenes.length; i++) {
+      if (scenes[i].data.id === id) {
+        return scenes[i];
+      }
+    }
+    return null;
+  }
+
+  function findSceneDataById(id) {
+    for (var i = 0; i < data.scenes.length; i++) {
+      if (data.scenes[i].id === id) {
+        return data.scenes[i];
+      }
+    }
+    return null;
+  }
+
+  // Display the initial scene.
+  switchScene(scenes[0]);
+
+
+
+})();
