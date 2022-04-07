@@ -225,7 +225,7 @@
     }
 
     else if(hotspot.target =="14-side_interior" || hotspot.target =="12-front_interior" ||  hotspot.target =="13-back_interior"){
-      icon.src = 'img/down.png';
+      icon.src = 'img/down-blue.png';
       icon.classList.add('link-hotspot-icon-seat');
 
     }
